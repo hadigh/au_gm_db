@@ -70,10 +70,15 @@ if tr.passed:
 in line 350!
 
 
-Note: adding lines to config.yml should be by space and not tab!!! (if tab you get strange errors)
+
 
 
 #############################################################################################################
+Note: adding lines to config.yml should be by space and not tab!!! (if tab you get strange errors)
+
+unknown problem:
+f = '../gmprocess_projects/data/20200415071104/raw/AU.CNB..BHE__2020-04-15T07:07:00.019538Z__2020-04-15T07:36:59.994538Z.mseed'
+
 # Fail a stream if any of the constituent traces failed?
  any_trace_failures: False
 
@@ -89,8 +94,7 @@ check_instrument
 
 snr_check
 
-unknown problem:
-f = '../gmprocess_projects/data/20200415071104/raw/AU.CNB..BHE__2020-04-15T07:07:00.019538Z__2020-04-15T07:36:59.994538Z.mseed'
+
 
 #5) 👋️ revised the "1P" network dataless seed file by running
 #anu_response_reviser.py
