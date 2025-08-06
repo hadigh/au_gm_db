@@ -1,0 +1,4 @@
+# ignore waveform folder that contains all mseed files (there is a backup on HD)
+wf_data/
+# ignore gmprocess_projects folder (make backup on HD) 
+gmprocess_projects/
