@@ -15,7 +15,7 @@ df = pd.read_csv('../outputs/flatfile.csv')
 # --- 2. Data Preprocessing and Feature Engineering ---
 # Filter to keep only records where record_id ends with 'Z'
 df = df[df['record_id'].str.endswith('Z')]
-
+# df = df[(df['record_id'].str.endswith('Z')) & (df['magnitude'] >= 3.75) & (df['distance'] <= 1500)]
 # Create a new binary feature 'record_type' based on the channel code's first letter
 # The channel code is the last three characters of the record_id
 # 1 if the code starts with 'B' or 'H' (Broadband), 0 if it starts with 'S' or 'E' (Short Period)
