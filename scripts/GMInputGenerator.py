@@ -229,10 +229,11 @@ wf_lst = pd.read_csv(wf_lst_file)
 wf_lst = wf_lst[wf_lst["PAZ_FILE"] != "Missing!"]
 wf_lst = wf_lst.reset_index()
 
-# drop traces with epicentral distance > max_dist km
-max_dist = 66000.0  # km
-wf_lst = wf_lst[wf_lst["REPI"] <= max_dist]
-wf_lst = wf_lst.reset_index()
+# drop traces with epicentral distance > max_dist km, and magnitude < min_mag
+max_dist = 1500.0  # km
+min_mag = 3.75 #MW
+wf_lst = wf_lst[(wf_lst["REPI"] <= max_dist) & (wf_lst["MW"] >= min_mag)]
+wf_lst = wf_lst.reset_index(drop=True)
 
 # generate gmprocess input files
 eve_ids = wf_lst.event_origin.unique()
