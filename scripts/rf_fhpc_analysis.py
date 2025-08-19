@@ -14,8 +14,8 @@ df = pd.read_csv('../outputs/flatfile.csv')
 
 # --- 2. Data Preprocessing and Feature Engineering ---
 # Filter to keep only records where record_id ends with 'Z'
-df = df[df['record_id'].str.endswith('Z')]
-# df = df[(df['record_id'].str.endswith('Z')) & (df['magnitude'] >= 3.75) & (df['distance'] <= 1500)]
+# df = df[df['record_id'].str.endswith('Z')]
+df = df[(df['record_id'].str.endswith('Z')) & (df['magnitude'] >= 3.75) & (df['distance'] <= 1500)]
 # Create a new binary feature 'record_type' based on the channel code's first letter
 # The channel code is the last three characters of the record_id
 # 1 if the code starts with 'B' or 'H' (Broadband), 0 if it starts with 'S' or 'E' (Short Period)
@@ -103,3 +103,13 @@ plt.tight_layout()
 plt.savefig('predicted_vs_actual_with_interactions.png') # Save the plot
 plt.close()
 
+
+selected_columns = ['hpc', 'magnitude', 'distance']
+
+correlation_matrix = df[selected_columns].corr()
+
+# Plot the correlation heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+plt.title('Correlation Heatmap between fhpc and Selected Features')
+plt.show()

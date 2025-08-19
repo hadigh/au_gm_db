@@ -54,7 +54,7 @@ au_wf_lst.csv and the one retrieved from mseed file itself!
 # Inputs
 wf_lst_file = "../outputs/extended_au_wf_lst.csv"
 sta_lst_file = "../inputs/stationlist.dat"
-inv_AUSPASS_II_IU_file = "../inputs/inv_AUSPASS_II_IU.xml"
+inv_AUSPASS_II_IU_file = "../outputs/inv_AUSPASS_II_IU.xml"
 inv_AU_file = "../inputs/AU.dataless"
 sta_vs_file = "../inputs/au_station_vs30.csv"
 
@@ -261,6 +261,14 @@ inv_anu_ii_iu_s1 = read_inventory(inv_AUSPASS_II_IU_file)
 # read AU iventory
 inv_au = read_inventory(inv_AU_file)
 
+ASSCM_SC = []
+KAYEN_SC = []
+ASSCM_VS = []
+KAYEN_VS = []
+USGS_VS = []
+HVSR_VS = []
+PWAVE_VS = []
+ARRAY_VS = []
 vs_value = []
 vs_flag = []
 rev_net_code = []
@@ -300,8 +308,32 @@ for index, row in wf_lst.iterrows():
         .sort_values("Distance")
         .reset_index(drop=True)
     )
-    
+    # breakpoint();
     if len(df_dum):
+        ASSCM_SC.append(
+            df_dum["ASSCM_SC"][0] if df_dum["Distance"][0] < 100.0 else "Distance>100.0!"
+        )
+        KAYEN_SC.append(
+            df_dum["KAYEN_SC"][0] if df_dum["Distance"][0] < 100.0 else "Distance>100.0!"
+        )
+        ASSCM_VS.append(
+            df_dum["ASSCM_VS"][0] if df_dum["Distance"][0] < 100.0 else "Distance>100.0!"
+        )
+        KAYEN_VS.append(
+            df_dum["KAYEN_VS"][0] if df_dum["Distance"][0] < 100.0 else "Distance>100.0!"
+        )
+        USGS_VS.append(
+            df_dum["USGS_VS"][0] if df_dum["Distance"][0] < 100.0 else "Distance>100.0!"
+        )
+        HVSR_VS.append(
+            df_dum["HVSR_VS"][0] if df_dum["Distance"][0] < 100.0 else "Distance>100.0!"
+        )
+        PWAVE_VS.append(
+            df_dum["PWAVE_VS"][0] if df_dum["Distance"][0] < 100.0 else "Distance>100.0!"
+        )
+        ARRAY_VS.append(
+            df_dum["ARRAY_VS"][0] if df_dum["Distance"][0] < 100.0 else "Distance>100.0!"
+        )
         vs_value.append(
             df_dum["avg_vs"][0] if df_dum["Distance"][0] < 100.0 else "Distance>100.0!"
         )
@@ -471,6 +503,14 @@ for index, row in wf_lst.iterrows():
     # endregion
     
 
+wf_lst["KAYEN_SC"] = KAYEN_SC
+wf_lst["ASSCM_SC"] = ASSCM_SC
+wf_lst["KAYEN_VS"] = KAYEN_VS
+wf_lst["ASSCM_VS"] = ASSCM_VS
+wf_lst["USGS_VS"] = USGS_VS
+wf_lst["PWAVE_VS"] = PWAVE_VS
+wf_lst["HVSR_VS"] = HVSR_VS
+wf_lst["ARRAY_VS"] = ARRAY_VS
 
 wf_lst["VS"] = vs_value
 wf_lst["VS_FLAG"] = vs_flag

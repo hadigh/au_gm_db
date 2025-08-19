@@ -13,6 +13,9 @@ differences for event 20001223071323 are {'II.WRAB.00.BH', 'II.WRAB.10.BH'}
 # Define the base directory
 data_directory = "../gmprocess_projects/data"
 
+# store those with assembly issue!
+output_log = "../outputs/gmprocess_assembly_issue.log"
+
 # Iterate through all directories within the data directory
 diff = {}
 for root, dirs, files in os.walk(data_directory):
@@ -71,3 +74,13 @@ for root, dirs, files in os.walk(data_directory):
 
                 diff[event_id] = set(df["ID"]) - set(streams_ids)
                 print(f"differences for event {event_id} are {diff[event_id]}")
+
+# Clear the file at the start
+open(output_log, "w").close()
+
+with open(output_log, "w") as f:
+    for event_id, differences in diff.items():
+        if differences:  # only write if set is not empty
+            f.write(f"Event ID: {event_id}\n")
+            f.write(f"Differences for event {event_id} are {sorted(differences)}\n\n")
+
