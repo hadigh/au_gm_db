@@ -119,13 +119,30 @@ print(f"Percentage of duplicate entries: {percentage:.2f}%")
 
 # --- 6. Distance-Magnitude plot % ---
 
-g = sns.jointplot(data=df, x="distance", y="magnitude", hue="label", kind='scatter', s=50, alpha=0.5, palette=['red', 'blue'], height=6)
+g = sns.jointplot(data=df, x="distance", y="magnitude", hue="label", kind='scatter', s=50, alpha=0.5, palette=['red', 'blue'], height=6,
+                  marginal_ticks=True)
 
+# approach 2
+# g = sns.JointGrid(data=df, x="distance", y="magnitude", hue="label", palette=['red', 'blue'], height=6,  marginal_ticks=True)
+# # Customize scatterplot: size and alpha
+# g.plot_joint(sns.scatterplot, s=60, alpha=0.4)
+# # Add marginal histograms
+# # g.plot_marginals(sns.histplot, alpha=0.4)
 
+# # Plot marginal histograms only
+
+# palette = {'Failed': 'red', 'Passed': 'blue'}
+# sns.histplot(data=df, x="distance", hue="label", common_norm=True, ax=g.ax_marg_x, log_scale=True, palette=palette,
+#              legend=False, alpha=0.4)
+# sns.histplot(data=df, y="magnitude", hue="label", common_norm=True, ax=g.ax_marg_y, palette=palette, legend=False, alpha=0.4)
+
+# Remove the legend
+g.ax_joint.legend_.remove()
 g.ax_joint.set_xscale('log')
 g.ax_joint.grid(True, linestyle='--', alpha=0.6) 
-g.savefig("../outputs/SRL_mag-dist.png", dpi=600)
+g.set_axis_labels("Distance (km)", "Magnitude (Mw)")
 
+g.savefig("../outputs/SRL_mag-dist.png", dpi=600)
 # --- 7. Network, and instrument plots % ---
 df_pass['instrument_type'] = df_pass['record_id'].str.split('.').str[3].str[:-1]
 all_networks = sorted(df_pass['network'].unique())
@@ -139,7 +156,7 @@ network_counts = df_pass['network'].value_counts().reindex(all_networks, fill_va
 total_records = len(df_pass)
 network_percentages = (network_counts / total_records) * 100
 
-# --- Subplot 2: Records with distance < 100 km by network as a percentage ---
+# --- Subplot 2: Records with distance < 50 km by network as a percentage ---
 # Filter the DataFrame for records with distance less than 50 km
 df_filtered = df_pass[df_pass['distance'] < 50]
 # Count the number of records for each network, reindex, and convert to percentages.
@@ -166,8 +183,8 @@ class_percentages = (class_counts / class_counts.sum()) * 100
 
 # Create a figure with two subplots side by side and shared x-axis
 # Create the figure and axes
-fig, axes = plt.subplots(3, 2, figsize=(16, 14))
-labels = ['(a)', '(b)', '(c)', '(d)', '(e)', '(f)']
+fig, axes = plt.subplots(3, 2, figsize=(14, 14))
+labels = ['(a)', '(b)', '(a)', '(b)', '(a)', '(b)']
 data_series = [
     network_percentages,
     network_percentages_filtered,
@@ -186,17 +203,34 @@ xlabels = [
 ]
 
 # Plot each subplot
-for i, ax in enumerate(axes.flat):
-    series = data_series[i]
-    ax.bar(series.index, series.values, color='gray', edgecolor='black')
-    ax.set_xlabel(xlabels[i])
-    ax.set_ylabel('Percentage (%)')
-    ax.grid(axis='y', linestyle='--', alpha=0.7)
-    ax.text(0.007, 0.98, labels[i], transform=ax.transAxes, fontsize=12, verticalalignment='top')
-    plt.setp(ax.get_xticklabels(), rotation=45 if i == 4 else (90 if i in [0, 1] else 0))
+# for i, ax in enumerate(axes.flat):
+#     series = data_series[i]
+#     ax.bar(series.index, series.values, color='gray', edgecolor='black')
+#     ax.set_xlabel(xlabels[i])
+#     ax.set_ylabel('Percentage (%)')
+#     ax.grid(axis='y', linestyle='--', alpha=0.7)
+#     ax.text(0.007, 0.98, labels[i], transform=ax.transAxes, fontsize=12, verticalalignment='top')
+#     plt.setp(ax.get_xticklabels(), rotation=45 if i == 4 else (90 if i in [0, 1] else 0))
+# plt.tight_layout()
+# plt.savefig("../outputs/SRL_net_inst_vs.png", dpi=600)
+# Create three separate 2x1 figures
+fig_file = ['../outputs/SRL_net.png', '../outputs/SRL_inst.png','../outputs/SRL_vs.png']
+for fig_num in range(3):
+    fig, axes = plt.subplots(2, 1, figsize=(6, 6))
+    for i in range(2):
+        idx = fig_num * 2 + i
+        ax = axes[i]
+        series = data_series[idx]
+        ax.bar(series.index, series.values, color='gray', edgecolor='black')
+        ax.set_xlabel(xlabels[idx])
+        ax.set_ylabel('Percentage (%)')
+        ax.grid(axis='y', linestyle='--', alpha=0.7)
+        ax.text(0.007, 0.98, labels[idx], transform=ax.transAxes, fontsize=12, verticalalignment='top')
+        plt.setp(ax.get_xticklabels(), rotation=45 if idx == 4 else (90 if idx in [0, 1] else 0))
+    plt.tight_layout()
+    plt.savefig(fig_file[fig_num], dpi=600)
+breakpoint()
 
-plt.tight_layout()
-plt.savefig("../outputs/SRL_net_inst_vs.png", dpi=600)
 # --- 8. plot fail reason histogram % ---
 df_fail_all_channels = df_fail_all_channels[(df_fail_all_channels['record_id'].str.endswith('Z')) & (df_fail_all_channels['magnitude'] >= 3.75) & (df_fail_all_channels['distance'] <= 1500)]
 # Filter out rows where fail_reason is 'Passed'
@@ -208,8 +242,8 @@ mapping = {
     "Colocated with HN instrument.": "Colocated",
     "No instruments match entries in the colocated instrument preference list for this station.": "Colocated",
     "Failed SNR check.": "SNR_check",
-    "SNR not greater than required threshold.": "SNR_check",
-    "SNR not met within the required bandwidth.": "SNR_check",
+    "SNR not greater than required threshold.": "SNR check",
+    "SNR not met within the required bandwidth.": "SNR check",
     "Failed clipping check.": "Clipping check",
     "Failed noise window duration check.": "Noise window check",
     "Minimum sample rate of 20.0 not exceeded.": "Sampling rate check",
@@ -234,7 +268,7 @@ df_fail_all_channels['mapped_fail_reason'].value_counts().plot(kind='bar', color
 plt.title('Frequency of Fail Reason Categories')
 plt.xlabel('Fail Reason Category')
 plt.ylabel('Frequency')
-plt.xticks(rotation=45)
+plt.xticks(rotation=45, ha='right')
 plt.tight_layout()
 plt.savefig("../outputs/SRL_fail_hist.png", dpi=600)
 plt.show()
@@ -249,9 +283,14 @@ selected_columns = ['hpc', 'magnitude', 'distance', 'VS']
 
 correlation_matrix = df_merged[selected_columns].corr()
 
+# Rename columns for plotting
+renamed_columns = ['HPC', 'Magnitude', 'Distance', 'Vs30']
+correlation_matrix.columns = renamed_columns
+correlation_matrix.index = renamed_columns
+
 # Plot the correlation heatmap
 plt.figure(figsize=(6, 6))
-sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f", square=True, vmin=-1, vmax=1, center=0)
 # plt.title('Correlation Heatmap between fhpc and Selected Features')
 plt.savefig("../outputs/SRL_corr_mtrx.png", dpi=600)
 plt.show()
