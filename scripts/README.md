@@ -4,27 +4,36 @@ Here’s a cleaned-up and GitHub-flavored Markdown version of your notes. I’ve
 
 # 📜 Script Execution Workflow
 
-> **Note:** Check **my revisions 1, 2, and 3** first!
+> **Note:** Check **my revisions, 0, 1, 2, and 3** first!
 
 ### ✅ Step-by-step Instructions
 
 1. **Run** `WaveformFileVerifier.py`  
    → Verifies if all waveform files exist.
 
-2. **[Optional]** Run `PazFileVerifier.py`  
+2. **Run** `PazFileVerifier.py`  
    → Checks which `pazfile` listed in `stationlist.dat` is missing from `../inputs/paz`.
+     - Below can be ignored!
+     - [MISSING]   episensor-es-t.paz: includes all entries with network 'ND' and stations that have no corresponding records in au_wf_lst.csv.
+     - [MISSING]   inst.paz: includes all entries with network "1K" for which the response should be avialable from inv_AUSPASS_II_IU.xml
+     - [MISSING]   trillium-360.paz: includes only 3 entries with network "II" for which the response should be avialable from inv_AUSPASS_II_IU.xml
 
 3. **Run** `WaveformListAugmenter.py`  
    → ⚠️ Modify lines **27** and **32** if needed.
+   → ⚠️ the log file is here: log_file_path = "../outputs/not_mergable_streams.log"; Listing streams that could not be merged, for example due to incorrect channel code assignments.
 
 4. **Run** `WaveformListStationListStationVsMerger.py`  
    → ⚠️ Modify lines **55–63**.
+   → ⚠️ a range of log files is generated with ".log" extension. for details see the code header!
 
 5. **Run** `GMInputGenerator.py`  
    → ⚠️ Modify line **38**.  
    → Had to run in **two segments**:
    - Until end of 2022
    - From start of 2023 to end (see line 181)
+   - ln 231: # drop traces with epicentral distance > max_dist km, and magnitude < min_mag
+      max_dist = 1500.0  # km
+      min_mag = 3.75 #MW
 
 6. **Run** `PortalStationxmlGenerator.py`  
    → ⚠️ Modify lines **271** and **275**.
@@ -34,6 +43,9 @@ Here’s a cleaned-up and GitHub-flavored Markdown version of your notes. I’ve
 ---
 
 # 🔁 My Revisions
+
+### 0. `in stationlist.dat replace all XX with 4N!`  
+- in stationlist.dat replace all XX with 4N!
 
 ### 1. `fix_channel_codes.py`  
 - Manually assigned correct channel codes to problematic streams.  

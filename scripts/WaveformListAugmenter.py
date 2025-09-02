@@ -17,11 +17,11 @@ Inputs:
 wf_lst_file: The path to the CSV file containing the available waveform names, as well as information related to 
 the corresponding earthquake and recording station parameters
 
-wf_dir: .The directory path where the waveform files in MiniSEED format are stored.
+wf_dir: The directory path where the waveform files in MiniSEED format are stored.
 
 Outputs:
 
-mode_wf_lst_file: The file path for the augmented CSV file, which includes information 
+extended_au_wf_lst.csv: The file path for the augmented CSV file, which includes information 
 on network, channel, location, and sampling rate, in addition to that from the original waveform list file. 
 """
 # Inputs
@@ -44,6 +44,7 @@ def get_mseed_file_name(mseed_orig_path, wf_path=wf_dir):
 
 # add the file name of waveforms to the wf_lst csv file!
 wf_lst = pd.read_csv(wf_lst_file)
+wf_lst = wf_lst.drop_duplicates()
 wf_lst["mseed_path"] = wf_lst["MSEEDFILE"].apply(get_mseed_file_name)
 wf_files = wf_lst["mseed_path"]
 

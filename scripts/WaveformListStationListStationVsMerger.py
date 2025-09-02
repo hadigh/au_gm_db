@@ -28,7 +28,7 @@ sta_vs_file: list of Vs30 values (from different approaches) for recording stati
 
 Outputs:
 
-mode_wf_lst_file: The file path for the merged waveform list with station list, it also specifies the source for 
+extended_au_wf_lst.csv: The file path for the merged waveform list with station list, it also specifies the source for 
 the recording station metadata and if such information is missing! 
 (merged_au_wf_lst.csv: contain information on both waveforms and recording station)
 
@@ -374,6 +374,13 @@ for index, row in wf_lst.iterrows():
         log_txt = "Network code revised for %s station from S to S1" % row["STA"]
         print(log_txt)
         net_log["school_network"].append(log_txt)
+
+    # # case 3: if network code is "XX"
+    # if row["NET"] == "XX":
+    #     row["REV_NET"] = "4N"
+    #     log_txt = "Network code revised for %s station from XX to 4N" % row["STA"]
+    #     print(log_txt)
+    #     net_log["school_network"].append(log_txt)
 
     # case 3: if network code is not consistent with the one from station list!
     if not inv_anu_ii_iu_s1.select(

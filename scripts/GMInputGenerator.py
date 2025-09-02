@@ -37,11 +37,10 @@ Outputs:
 
 """
 # Inputs
-
 # wf_lst_file = "../outputs/merged_2021_WP_wf_lst.csv"  # this is just for one event!
 wf_lst_file = "../outputs/merged_au_wf_lst.csv"
 gp_dir = "../gmprocess_projects/data"
-inv_ANU_II_IU_S1_file = "../inputs/inv_AUSPASS_II_IU.xml"
+inv_ANU_II_IU_S1_file = "../outputs/inv_AUSPASS_II_IU.xml"
 
 # Functions
 def check_and_trim_trace(tr, eve_ot, eve_lon, eve_lat, sta_lon, sta_lat):

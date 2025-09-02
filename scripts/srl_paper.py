@@ -54,7 +54,6 @@ df_merged = df_merged.drop_duplicates(subset=['record_id', 'earthquake_id']).res
 # Apply the function to the 'VS' column
 df_merged['NEHRP_Site_Class'] = df_merged['VS'].apply(assign_nehrp_site_class)
 
-
 # breakpoint()
 
 # --- 3. Filter the DataFrame based on the criteria ---
